@@ -56,6 +56,7 @@ const Index = () => {
               type="text"
               id="email"
               className="my-2"
+              required
             />
             <TextField
               fullWidth
@@ -65,6 +66,7 @@ const Index = () => {
               type="text"
               id="full_name"
               className="my-2"
+              required
             />
             <TextField
               fullWidth
@@ -74,6 +76,7 @@ const Index = () => {
               type="password"
               id="password"
               className="my-2"
+              required
             />
             <TextField
               fullWidth
@@ -83,6 +86,7 @@ const Index = () => {
               type="text"
               id="phone_number"
               className="my-2"
+              required
             />
             <div className="flex justify-center">
               <button
