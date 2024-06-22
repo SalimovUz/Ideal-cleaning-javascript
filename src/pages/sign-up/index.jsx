@@ -8,20 +8,40 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Index = () => {
   const [form, setForm] = useState({});
-   const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [phoneError, setPhoneError] = useState(false);
+
   const handleChange = (event) => {
     const { value, name } = event.target;
     setForm({ ...form, [name]: value });
+
+    if (name === "password") {
+      validatePassword(value);
+    } else if (name === "phone_number") {
+      validatePhoneNumber(value);
+    }
   };
-   const handleClickShowPassword = () => {
-     setShowPassword(!showPassword);
-   };
 
-   const handleMouseDownPassword = (event) => {
-     event.preventDefault();
-   };
+  const validatePassword = (password) => {
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    setPasswordError(!(hasUpperCase && hasNumber));
+  };
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const validatePhoneNumber = (phoneNumber) => {
+    const isValidUzbekPhoneNumber = /^(\+998)?\d{9}$/.test(phoneNumber);
+    setPhoneError(!isValidUzbekPhoneNumber);
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   const toggleModal = () => {
     setModalOpen(!modalOpen);
@@ -44,7 +64,6 @@ const Index = () => {
       }
     } catch (error) {
       console.log("Error during signup:", error);
-      // alert("Ushbu akkaunt bilan avval ro'yxatdan o'tilgan");
     }
   };
 
@@ -103,7 +122,11 @@ const Index = () => {
                   ),
                 }}
               />
-              <p className="text-sm text-rose-600 opacity-0">
+              <p
+                className={`text-sm text-rose-600 ${
+                  passwordError ? "opacity-100" : "opacity-0"
+                }`}
+              >
                 Parolda kamida bitta katta harf va raqam qatnashgan bo'lishi
                 shart!
               </p>
@@ -118,9 +141,12 @@ const Index = () => {
                 id="phone_number"
                 className=""
                 required
-                // value="+998"
               />
-              <p className="text-sm text-rose-600 opacity-0">
+              <p
+                className={`text-sm text-rose-600 ${
+                  phoneError ? "opacity-100" : "opacity-0"
+                }`}
+              >
                 Faqat O'zbek raqamlari ro'yxatdan o'tishi mumkin
               </p>
             </div>
