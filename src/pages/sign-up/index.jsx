@@ -2,13 +2,24 @@ import { TextField } from "@mui/material";
 import React, { useState } from "react";
 import { auth } from "../../service";
 import VerifyCodeModal from "../../components/VerifyCodeModal";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Index = () => {
   const [form, setForm] = useState({});
+   const [showPassword, setShowPassword] = useState(false);
   const handleChange = (event) => {
     const { value, name } = event.target;
     setForm({ ...form, [name]: value });
   };
+   const handleClickShowPassword = () => {
+     setShowPassword(!showPassword);
+   };
+
+   const handleMouseDownPassword = (event) => {
+     event.preventDefault();
+   };
 
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -33,7 +44,7 @@ const Index = () => {
       }
     } catch (error) {
       console.log("Error during signup:", error);
-      alert("Ushbu akkaunt bilan avval ro'yxatdan o'tilgan");
+      // alert("Ushbu akkaunt bilan avval ro'yxatdan o'tilgan");
     }
   };
 
@@ -42,7 +53,7 @@ const Index = () => {
       <div className="flex flex-col items-center justify-center bg-white p-8 rounded-lg shadow-lg">
         <VerifyCodeModal isOpen={modalOpen} toggle={toggleModal} />
         <div className="card mb-4">
-          <h1 className="text-2xl font-bold text-center text-gray-800">
+          <h1 className="text-2xl border-none font-bold text-center text-gray-800">
             Sign-Up
           </h1>
         </div>
@@ -55,7 +66,7 @@ const Index = () => {
               onChange={handleChange}
               type="text"
               id="email"
-              className="my-2"
+              className="my-3"
               required
             />
             <TextField
@@ -65,29 +76,54 @@ const Index = () => {
               onChange={handleChange}
               type="text"
               id="full_name"
-              className="my-2"
+              className="my-3"
               required
             />
-            <TextField
-              fullWidth
-              label="Password"
-              name="password"
-              onChange={handleChange}
-              type="password"
-              id="password"
-              className="my-2"
-              required
-            />
-            <TextField
-              fullWidth
-              label="Phone Number"
-              name="phone_number"
-              onChange={handleChange}
-              type="text"
-              id="phone_number"
-              className="my-2"
-              required
-            />
+            <div>
+              <TextField
+                fullWidth
+                label="Password"
+                name="password"
+                onChange={handleChange}
+                type={showPassword ? "text" : "password"}
+                id="password"
+                className=""
+                required
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                      >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <p className="text-sm text-rose-600 opacity-0">
+                Parolda kamida bitta katta harf va raqam qatnashgan bo'lishi
+                shart!
+              </p>
+            </div>
+            <div>
+              <TextField
+                fullWidth
+                label="Phone Number"
+                name="phone_number"
+                onChange={handleChange}
+                type="text"
+                id="phone_number"
+                className=""
+                required
+                // value="+998"
+              />
+              <p className="text-sm text-rose-600 opacity-0">
+                Faqat O'zbek raqamlari ro'yxatdan o'tishi mumkin
+              </p>
+            </div>
             <div className="flex justify-center">
               <button
                 type="submit"

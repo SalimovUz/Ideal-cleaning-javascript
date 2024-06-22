@@ -33,11 +33,11 @@ const Index = () => {
           />
           <TextField
             fullWidth
-            label="Fullname"
-            name="full_name"
+            label="Password"
+            name="password"
             onChange={handleChange}
             type="text"
-            id="full_name"
+            id="password"
             className="my-2"
           />
           <div className="text-center">
