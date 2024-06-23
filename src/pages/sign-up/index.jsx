@@ -88,7 +88,7 @@ const Index = () => {
           </h1>
         </div>
         <div className="login_body w-full">
-          <form className="space-y-4" id="submit" onSubmit={handleSubmit}>
+          <form className="space-y-2 md:space-y-4" id="submit" onSubmit={handleSubmit}>
             <TextField
               fullWidth
               label="Email"
