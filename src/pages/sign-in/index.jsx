@@ -1,6 +1,9 @@
 import { TextField } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../../service";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Index = () => {
   const [form, setForm] = useState({});
@@ -13,6 +16,22 @@ const Index = () => {
 
   const moveRegister = () => {
     navigate("/sign-up");
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await auth.sign_in(form);
+
+      if (response.status === 200) {
+        localStorage.setItem("token", response?.data?.access_token);
+        toast.success("Succesfully Login!", {});
+      } else {
+        toast.error("Error Login!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -55,9 +74,21 @@ const Index = () => {
             type="submit"
             form="submit"
             className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+            onClick={handleSubmit}
           >
             Sign In
           </button>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
         </div>
       </div>
     </div>

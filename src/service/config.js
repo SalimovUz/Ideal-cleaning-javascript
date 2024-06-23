@@ -4,13 +4,11 @@ const http = axios.create({
   baseURL: "https://app.olimjanov.uz/v1",
 });
 
-
 http.interceptors.request.use((config) => {
-  let token = ""
-  if(token) {
-    config.headers[Authorization] = token;
+  const access_token = localStorage.getItem("access_token");
+  if (access_token) {
+    config.headers["Authorization"] = `Bearer ${access_token}`;
   }
-  return config
+  return config;
 });
-
-export default http
+export default http;

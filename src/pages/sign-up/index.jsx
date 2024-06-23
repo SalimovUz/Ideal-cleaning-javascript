@@ -5,6 +5,7 @@ import VerifyCodeModal from "../../components/VerifyCodeModal";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [form, setForm] = useState({});
@@ -12,6 +13,7 @@ const Index = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     const { value, name } = event.target;
@@ -25,9 +27,13 @@ const Index = () => {
   };
 
   const validatePassword = (password) => {
+    const minLength = 6;
     const hasUpperCase = /[A-Z]/.test(password);
     const hasNumber = /\d/.test(password);
-    setPasswordError(!(hasUpperCase && hasNumber));
+    const isValidLength = password.length >= minLength;
+
+    const isValidPassword = hasUpperCase && hasNumber && isValidLength;
+    setPasswordError(!isValidPassword);
   };
 
   const validatePhoneNumber = (phoneNumber) => {
@@ -49,6 +55,7 @@ const Index = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setModalOpen(!modalOpen);
 
     try {
       const response = await auth.sign_up(form);
@@ -65,6 +72,10 @@ const Index = () => {
     } catch (error) {
       console.log("Error during signup:", error);
     }
+  };
+
+  const moveRegister = () => {
+    navigate("/");
   };
 
   return (
@@ -128,7 +139,7 @@ const Index = () => {
                 }`}
               >
                 Parolda kamida bitta katta harf va raqam qatnashgan bo'lishi
-                shart!
+                shart! Umumiy 6 ta belgi bo'lsin
               </p>
             </div>
             <div>
@@ -150,7 +161,14 @@ const Index = () => {
                 Faqat O'zbek raqamlari ro'yxatdan o'tishi mumkin
               </p>
             </div>
-            <div className="flex justify-center">
+            <div className="flex flex-col justify-center gap-3">
+              <a
+                onClick={moveRegister}
+                href="#"
+                className="text-blue-500 hover:underline text-center w-1/4 mx-auto"
+              >
+                Login
+              </a>
               <button
                 type="submit"
                 className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors duration-300"

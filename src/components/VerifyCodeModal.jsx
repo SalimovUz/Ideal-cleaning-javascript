@@ -11,9 +11,14 @@ import {
   Label,
 } from "reactstrap";
 import { auth } from "../service";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const VerifyCodeModal = ({ isOpen, toggle }) => {
   const [code, setCode] = useState("");
+  const navigate = useNavigate();
+
   const [countdown, setCountdown] = useState(60);
 
   useEffect(() => {
@@ -43,7 +48,7 @@ const VerifyCodeModal = ({ isOpen, toggle }) => {
     e.preventDefault();
 
     if (!code.trim()) {
-      alert("Kodni kiriting"); 
+      alert("Kodni kiriting");
       return;
     }
 
@@ -55,13 +60,10 @@ const VerifyCodeModal = ({ isOpen, toggle }) => {
     try {
       const response = await auth.verify_code(payload);
       if (response.status === 200) {
-        alert("Done"); 
-        toggle(); 
-      }else if (response.status === 201) {
-        alert("Ro'yxatdan o'tdingiz");
-        toggle(); 
-      }
-       else {
+        navigate("/");
+        toggle();
+        toast.success("Succesfully Register!", {});
+      } else {
         alert("Kod xato kiritildi");
       }
     } catch (error) {
@@ -94,6 +96,17 @@ const VerifyCodeModal = ({ isOpen, toggle }) => {
         <Button color="primary" onClick={handleSubmit}>
           Verify
         </Button>{" "}
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <Button color="secondary" onClick={toggle}>
           Cancel
         </Button>
