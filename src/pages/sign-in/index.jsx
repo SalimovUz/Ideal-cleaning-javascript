@@ -55,7 +55,7 @@ const Index = () => {
             label="Password"
             name="password"
             onChange={handleChange}
-            type="text"
+            type="password"
             id="password"
             className="my-2"
           />
