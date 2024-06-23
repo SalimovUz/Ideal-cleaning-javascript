@@ -134,12 +134,12 @@ const Index = () => {
                 }}
               />
               <p
-                className={`text-sm text-rose-600 ${
+                className={`text-xs text-rose-600 ${
                   passwordError ? "opacity-100" : "opacity-0"
                 }`}
               >
                 Parolda kamida bitta katta harf va raqam qatnashgan bo'lishi
-                shart! Umumiy 6 ta belgi bo'lsin
+                shart!
               </p>
             </div>
             <div>
@@ -154,7 +154,7 @@ const Index = () => {
                 required
               />
               <p
-                className={`text-sm text-rose-600 ${
+                className={`text-xs text-rose-600 ${
                   phoneError ? "opacity-100" : "opacity-0"
                 }`}
               >
