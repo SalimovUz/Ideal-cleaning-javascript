@@ -41,9 +41,9 @@ const Index = () => {
     setPhoneError(!isValidUzbekPhoneNumber);
   };
 
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+  // const handleClickShowPassword = () => {
+  //   setShowPassword(!showPassword);
+  // };
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
@@ -57,6 +57,7 @@ const Index = () => {
     e.preventDefault();
     setModalOpen(!modalOpen);
 
+    
     try {
       const response = await auth.sign_up(form);
       if (response.status === 200) {
@@ -73,6 +74,9 @@ const Index = () => {
       console.log("Error during signup:", error);
     }
   };
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const moveRegister = () => {
     navigate("/");
@@ -88,7 +92,11 @@ const Index = () => {
           </h1>
         </div>
         <div className="login_body w-full">
-          <form className="space-y-2 md:space-y-4" id="submit" onSubmit={handleSubmit}>
+          <form
+            className="space-y-2 md:space-y-4"
+            id="submit"
+            onSubmit={handleSubmit}
+          >
             <TextField
               fullWidth
               label="Email"
@@ -96,7 +104,7 @@ const Index = () => {
               onChange={handleChange}
               type="text"
               id="email"
-              className="my-3"
+              className="my-2"
               required
             />
             <TextField
@@ -106,10 +114,10 @@ const Index = () => {
               onChange={handleChange}
               type="text"
               id="full_name"
-              className="my-3"
+              className="my-2"
               required
             />
-            <div>
+            <div className="my-2">
               <TextField
                 fullWidth
                 label="Password"
@@ -117,7 +125,6 @@ const Index = () => {
                 onChange={handleChange}
                 type={showPassword ? "text" : "password"}
                 id="password"
-                className=""
                 required
                 InputProps={{
                   endAdornment: (
@@ -135,14 +142,14 @@ const Index = () => {
               />
               <p
                 className={`text-xs text-rose-600 ${
-                  passwordError ? "opacity-100" : "opacity-0"
+                  passwordError ? "flex" : "hidden"
                 }`}
               >
                 Parolda kamida bitta katta harf va raqam qatnashgan bo'lishi
                 shart!
               </p>
             </div>
-            <div>
+            <div className="my-2">
               <TextField
                 fullWidth
                 label="Phone Number"
@@ -150,12 +157,12 @@ const Index = () => {
                 onChange={handleChange}
                 type="text"
                 id="phone_number"
-                className=""
                 required
+                className="mt-2"
               />
               <p
                 className={`text-xs text-rose-600 ${
-                  phoneError ? "opacity-100" : "opacity-0"
+                  phoneError ? "flex" : "hidden"
                 }`}
               >
                 Faqat O'zbek raqamlari ro'yxatdan o'tishi mumkin
