@@ -6,6 +6,8 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Index = () => {
   const [form, setForm] = useState({});
@@ -41,10 +43,6 @@ const Index = () => {
     setPhoneError(!isValidUzbekPhoneNumber);
   };
 
-  // const handleClickShowPassword = () => {
-  //   setShowPassword(!showPassword);
-  // };
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
@@ -55,13 +53,12 @@ const Index = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setModalOpen(!modalOpen);
 
-    
     try {
       const response = await auth.sign_up(form);
       if (response.status === 200) {
         setModalOpen(true);
+        toast.success("Succesfully Register!", {});
         localStorage.setItem("email", form.email);
       } else if (response.status === 400) {
         const data = await response.json();

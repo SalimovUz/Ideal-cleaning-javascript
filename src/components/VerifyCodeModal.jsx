@@ -59,12 +59,10 @@ const VerifyCodeModal = ({ isOpen, toggle }) => {
 
     try {
       const response = await auth.verify_code(payload);
-      if (response.status === 200) {
-        navigate("/");
+      if (response.status === 201) {
         toggle();
+        navigate("/");
         toast.success("Succesfully Register!", {});
-      } else {
-        alert("Kod xato kiritildi");
       }
     } catch (error) {
       console.log(error);
