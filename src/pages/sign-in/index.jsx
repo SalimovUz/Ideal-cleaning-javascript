@@ -4,10 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "../../service";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Index = () => {
   const [form, setForm] = useState({});
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const handleChange = (event) => {
     const { value, name } = event.target;
@@ -33,6 +38,12 @@ const Index = () => {
       console.log(error);
     }
   };
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+   const handleMouseDownPassword = (event) => {
+     event.preventDefault();
+   };
 
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
@@ -50,7 +61,7 @@ const Index = () => {
             id="email"
             className="my-2"
           />
-          <TextField
+          {/* <TextField
             fullWidth
             label="Password"
             name="password"
@@ -58,7 +69,31 @@ const Index = () => {
             type="password"
             id="password"
             className="my-2"
-          />
+          /> */}
+          <div>
+            <TextField
+              fullWidth
+              label="Password"
+              name="password"
+              onChange={handleChange}
+              type={showPassword ? "text" : "password"}
+              id="password"
+              required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </div>
           <div className="text-center">
             <a
               onClick={moveRegister}
