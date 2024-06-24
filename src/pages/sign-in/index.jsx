@@ -13,7 +13,6 @@ const Index = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
-
   const handleChange = (event) => {
     const { value, name } = event.target;
     setForm({ ...form, [name]: value });
@@ -31,19 +30,18 @@ const Index = () => {
       if (response.status === 200) {
         localStorage.setItem("token", response?.data?.access_token);
         toast.success("Succesfully Login!", {});
-      } else {
-        toast.error("Error Login!");
       }
     } catch (error) {
       console.log(error);
+      toast.error("Parol yoki Email xato kiritildi!");
     }
   };
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
-   const handleMouseDownPassword = (event) => {
-     event.preventDefault();
-   };
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
@@ -98,8 +96,9 @@ const Index = () => {
             <a
               onClick={moveRegister}
               href="#"
-              className="text-blue-500 hover:underline"
+              className="text-blue-500 no-underline hover:underline"
             >
+              <span className="text-black">Agar sizda akkaunt bo'lmasa </span>{" "}
               Register
             </a>
           </div>

@@ -58,14 +58,16 @@ const Index = () => {
       const response = await auth.sign_up(form);
       if (response.status === 200) {
         setModalOpen(true);
-        toast.success("Succesfully Register!", {});
+        toast.info("Email ga kod yuborildi!", {});
         localStorage.setItem("email", form.email);
       } else if (response.status === 400) {
         const data = await response.json();
         alert(data.error);
+        toast.error("Nimadir xato ketdi!", {});
         console.log(data.error);
       } else {
         console.log("Signup failed");
+        toast.error("Nimadir xato ketdi!", {});
       }
     } catch (error) {
       console.log("Error during signup:", error);

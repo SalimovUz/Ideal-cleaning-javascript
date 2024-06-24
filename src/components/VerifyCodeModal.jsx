@@ -48,7 +48,7 @@ const VerifyCodeModal = ({ isOpen, toggle }) => {
     e.preventDefault();
 
     if (!code.trim()) {
-      alert("Kodni kiriting");
+      toast.warning("Kodni kiriting!");
       return;
     }
 
@@ -61,11 +61,14 @@ const VerifyCodeModal = ({ isOpen, toggle }) => {
       const response = await auth.verify_code(payload);
       if (response.status === 201) {
         toggle();
-        navigate("/");
-        toast.success("Succesfully Register!", {});
+        if (navigate("/")) {
+          toast.success("Kod email ga yuborildi!", {});
+        }
+        // navigate("/");
       }
     } catch (error) {
       console.log(error);
+      toast.error("Kod kiritishda xatolik!", {});
     }
   };
 
