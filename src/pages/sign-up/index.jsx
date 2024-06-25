@@ -8,40 +8,33 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
 
 const Index = () => {
-  const [form, setForm] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (event) => {
-    const { value, name } = event.target;
-    setForm({ ...form, [name]: value });
-
-    if (name === "password") {
-      validatePassword(value);
-    } else if (name === "phone_number") {
-      validatePhoneNumber(value);
-    }
-  };
-
-  const validatePassword = (password) => {
-    const minLength = 6;
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasNumber = /\d/.test(password);
-    const isValidLength = password.length >= minLength;
-
-    const isValidPassword = hasUpperCase && hasNumber && isValidLength;
-    setPasswordError(!isValidPassword);
-  };
-
-  const validatePhoneNumber = (phoneNumber) => {
-    const isValidUzbekPhoneNumber = /^(\+998)?\d{9}$/.test(phoneNumber);
-    setPhoneError(!isValidUzbekPhoneNumber);
-  };
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email ni kiriting!"),
+    full_name: Yup.string().required("Username ni kiriting!"),
+    password: Yup.string()
+      .min(6, "Parol kamida 6 ta harf va raqamdan tashkil topishi kerak!")
+      .matches(/[A-Z]/, "Parolda katta harf ham qatnashishi kerak!")
+      .matches(/\d/, "Kamida bitta raqam ham bo'lishi shart!")
+      .required("Parolni kiriting"),
+    phone_number: Yup.string()
+      .matches(
+        /^(\+998)?\d{9}$/,
+        "Faqat O'zbekiston raqamlari ro'yxatdan o'ta oladi!"
+      )
+      .required("Telefon raqam kiriting!"),
+  });
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
@@ -51,15 +44,13 @@ const Index = () => {
     setModalOpen(!modalOpen);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const response = await auth.sign_up(form);
+      const response = await auth.sign_up(values);
       if (response.status === 200) {
         setModalOpen(true);
         toast.info("Email ga kod yuborildi!", {});
-        localStorage.setItem("email", form.email);
+        localStorage.setItem("email", values.email);
       } else if (response.status === 400) {
         const data = await response.json();
         alert(data.error);
@@ -71,8 +62,11 @@ const Index = () => {
       }
     } catch (error) {
       console.log("Error during signup:", error);
+    } finally {
+      setSubmitting(false);
     }
   };
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -91,98 +85,112 @@ const Index = () => {
           </h1>
         </div>
         <div className="login_body w-full">
-          <form
-            className="space-y-2 md:space-y-4"
-            id="submit"
+          <Formik
+            initialValues={{
+              email: "",
+              full_name: "",
+              password: "",
+              phone_number: "",
+            }}
+            validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
-            <TextField
-              fullWidth
-              label="Email"
-              name="email"
-              onChange={handleChange}
-              type="text"
-              id="email"
-              className="my-2"
-              required
-            />
-            <TextField
-              fullWidth
-              label="Fullname"
-              name="full_name"
-              onChange={handleChange}
-              type="text"
-              id="full_name"
-              className="my-2"
-              required
-            />
-            <div className="my-2">
-              <TextField
-                fullWidth
-                label="Password"
-                name="password"
-                onChange={handleChange}
-                type={showPassword ? "text" : "password"}
-                id="password"
-                required
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                      >
-                        {showPassword ? <FaEyeSlash /> : <FaEye />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <p
-                className={`text-xs text-rose-600 ${
-                  passwordError ? "flex" : "hidden"
-                }`}
-              >
-                Parolda kamida bitta katta harf va raqam qatnashgan bo'lishi
-                shart!
-              </p>
-            </div>
-            <div className="my-2">
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phone_number"
-                onChange={handleChange}
-                type="text"
-                id="phone_number"
-                required
-                className="mt-2"
-              />
-              <p
-                className={`text-xs text-rose-600 ${
-                  phoneError ? "flex" : "hidden"
-                }`}
-              >
-                Faqat O'zbek raqamlari ro'yxatdan o'tishi mumkin
-              </p>
-            </div>
-            <div className="flex flex-col justify-center gap-3">
-              <a
-                onClick={moveRegister}
-                href="#"
-                className="text-blue-500 hover:underline text-center w-1/4 mx-auto"
-              >
-                Login
-              </a>
-              <button
-                type="submit"
-                className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors duration-300"
-              >
-                SignUp
-              </button>
-            </div>
-          </form>
+            {({
+              values,
+              handleChange,
+              handleBlur,
+              errors,
+              touched,
+              isSubmitting,
+            }) => (
+              <Form className="space-y-2 md:space-y-4" id="submit">
+                <TextField
+                  fullWidth
+                  label="Email"
+                  name="email"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.email}
+                  type="text"
+                  id="email"
+                  className="my-2"
+                  error={touched.email && Boolean(errors.email)}
+                  helperText={touched.email && errors.email}
+                />
+                <TextField
+                  fullWidth
+                  label="Fullname"
+                  name="full_name"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.full_name}
+                  type="text"
+                  id="full_name"
+                  className="my-2"
+                  error={touched.full_name && Boolean(errors.full_name)}
+                  helperText={touched.full_name && errors.full_name}
+                />
+                <div className="my-2">
+                  <TextField
+                    fullWidth
+                    label="Password"
+                    name="password"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.password}
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    error={touched.password && Boolean(errors.password)}
+                    helperText={touched.password && errors.password}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                          >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </div>
+                <div className="my-2">
+                  <TextField
+                    fullWidth
+                    label="Phone Number"
+                    name="phone_number"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.phone_number}
+                    type="text"
+                    id="phone_number"
+                    error={touched.phone_number && Boolean(errors.phone_number)}
+                    helperText={touched.phone_number && errors.phone_number}
+                    className="mt-2"
+                  />
+                </div>
+                <div className="flex flex-col justify-center gap-3">
+                  <a
+                    onClick={moveRegister}
+                    href="#"
+                    className="text-blue-500 hover:underline text-center w-1/4 mx-auto"
+                  >
+                    Login
+                  </a>
+                  <button
+                    type="submit"
+                    className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors duration-300"
+                    disabled={isSubmitting}
+                  >
+                    SignUp
+                  </button>
+                </div>
+              </Form>
+            )}
+          </Formik>
         </div>
       </div>
     </div>
