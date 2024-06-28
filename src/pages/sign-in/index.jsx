@@ -51,6 +51,7 @@ const Index = () => {
     try {
       const response = await auth.sign_in(values);
       if (response.status === 200) {
+        localStorage.setItem("email", values.email); // Save email to localStorage
         localStorage.setItem("token", response?.data?.access_token);
         toast.success("Successfully Login!", {});
       }
@@ -79,9 +80,23 @@ const Index = () => {
   };
 
   const handleVerifySubmit = async (values, { setSubmitting }) => {
+    const email = localStorage.getItem("email");
+
+    if (!email) {
+      toast.error("Email not found in localStorage");
+      setSubmitting(false);
+      return;
+    }
+
+    const payload = {
+      code: values.code,
+      email: email,
+      new_password: values.password,
+    };
+
     try {
-      const response = await auth.verify_forgot_password(values);
-      if (response.status === 200) {
+      const response = await auth.verify_forgot_password(payload);
+      if (response.status === 201) {
         setVerifyModalOpen(false);
         toast.success("Parol muvaffaqiyatli yangilandi!");
       }
@@ -225,13 +240,12 @@ const Index = () => {
         <DialogTitle>Verify Code & Reset Password</DialogTitle>
         <Formik
           initialValues={{
-            email: emailForPasswordReset,
             code: "",
-            newPassword: "",
+            password: "",
           }}
           validationSchema={Yup.object({
             code: Yup.string().required("Kod kiriting!"),
-            newPassword: Yup.string()
+            password: Yup.string()
               .min(
                 6,
                 "Parol kamida 6 ta harf va raqamdan tashkil topishi kerak!"
@@ -296,7 +310,11 @@ const Index = () => {
                 <Button onClick={() => setVerifyModalOpen(false)}>
                   Cancel
                 </Button>
-                <Button type="submit" color="primary" disabled={isSubmitting}>
+                <Button
+                  type="submit"
+                  color="primary"
+                  disabled={isSubmitting}
+                >
                   Submit
                 </Button>
               </DialogActions>
