@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
 import React, { useState } from "react";
 import { auth } from "../../service";
-import VerifyCodeModal from "../../components/VerifyCodeModal";
+import VerifyCodeModal from "../../components/modals/VerifyCodeModal";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -51,6 +51,9 @@ const Index = () => {
         setModalOpen(true);
         toast.info("Email ga kod yuborildi!", {});
         localStorage.setItem("email", values.email);
+        localStorage.setItem("username", values.full_name);
+        localStorage.setItem("phone_number", values.phone_number);
+        localStorage.setItem("password", values.password);
       } else if (response.status === 400) {
         const data = await response.json();
         alert(data.error);

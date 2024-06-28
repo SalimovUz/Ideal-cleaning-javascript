@@ -50,13 +50,18 @@ const Index = () => {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await auth.sign_in(values);
-      if (response.status === 200) {
-        localStorage.setItem("email", values.email); // Save email to localStorage
-        localStorage.setItem("token", response?.data?.access_token);
+      console.log("Response: ", response);
+
+      if (response.status === 200 && response.data.access_token) {
+        localStorage.setItem("email", values.email);
+        localStorage.setItem("access_token", response.data.access_token);
         toast.success("Successfully Login!", {});
+        navigate("/home");
+      } else {
+        toast.error("Login failed. Please try again.");
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error during login: ", error);
       toast.error("Parol yoki Email xato kiritildi!");
     } finally {
       setSubmitting(false);
@@ -310,11 +315,7 @@ const Index = () => {
                 <Button onClick={() => setVerifyModalOpen(false)}>
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  color="primary"
-                  disabled={isSubmitting}
-                >
+                <Button type="submit" color="primary" disabled={isSubmitting}>
                   Submit
                 </Button>
               </DialogActions>
