@@ -10,7 +10,7 @@ import {
   FormGroup,
   Label,
 } from "reactstrap";
-import { auth } from "../../service";
+import { auth } from "../../../service";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

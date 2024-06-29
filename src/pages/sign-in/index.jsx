@@ -52,11 +52,13 @@ const Index = () => {
       const response = await auth.sign_in(values);
       console.log("Response: ", response);
 
-      if (response.status === 200 && response.data.access_token) {
-        localStorage.setItem("email", values.email);
+      if (response.status === 200) {
+        navigate("/");
         localStorage.setItem("access_token", response.data.access_token);
-        toast.success("Successfully Login!", {});
-        navigate("/home");
+        Notification({
+          title: "Sign In Successfuly",
+          type: "success",
+        });
       } else {
         toast.error("Login failed. Please try again.");
       }

@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
 import React, { useState } from "react";
 import { auth } from "../../service";
-import VerifyCodeModal from "../../components/modals/VerifyCodeModal";
+import VerifyCodeModal from "../../components/modals/sign-in/VerifyCodeModal";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
