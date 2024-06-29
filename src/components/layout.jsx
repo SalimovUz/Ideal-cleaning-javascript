@@ -15,9 +15,11 @@ import Typography from "@mui/material/Typography";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { Button, ListItemText } from "@mui/material";
-import { LogOutModal } from "@modal";
+import LogOutModal from "./modals/logout/index"; // Assuming LogOutModal is in the same directory
 import routes from "../router/routes";
 import Logo from "../assets/Logo.svg";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ProfileModal from "./modals/profile/ProfileModal"; // Adjust the import path if needed
 
 const drawerWidth = 240;
 
@@ -25,8 +27,28 @@ function ResponsiveDrawer(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
+  const [profileModal, setProfileModal] = React.useState(false);
+  const [userProfile, setUserProfile] = React.useState({
+    image: "",
+    bio: "",
+    phone: "",
+    email: "",
+    password: "",
+  });
   const { pathname } = useLocation();
   const navigate = useNavigate();
+
+  const handleIconClick = () => {
+    setProfileModal(true);
+  };
+
+  const closeModal = () => {
+    setProfileModal(false);
+  };
+
+  const saveProfile = (profile) => {
+    setUserProfile(profile);
+  };
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -46,7 +68,6 @@ function ResponsiveDrawer(props) {
   const drawer = (
     <div>
       <Toolbar>
-        {" "}
         <img src={Logo} alt="logo" className="w-[144px]" />
       </Toolbar>
       <Divider />
@@ -107,7 +128,14 @@ function ResponsiveDrawer(props) {
             <Typography variant="h6" noWrap component="div">
               Responsive drawer
             </Typography>
-            <LogOutModal />
+            <div className="flex items-center space-x-4">
+              <AccountCircleIcon
+                style={{ height: 40, width: 40 }}
+                className="cursor-pointer"
+                onClick={handleIconClick}
+              />
+              <LogOutModal />
+            </div>
           </ListItem>
         </Toolbar>
       </AppBar>
@@ -160,6 +188,12 @@ function ResponsiveDrawer(props) {
         <Toolbar />
         <Outlet />
       </Box>
+      <ProfileModal
+        isOpen={profileModal}
+        closeModal={closeModal}
+        userProfile={userProfile}
+        saveProfile={saveProfile}
+      />
     </Box>
   );
 }
