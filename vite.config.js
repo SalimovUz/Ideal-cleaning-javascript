@@ -9,9 +9,11 @@ export default defineConfig({
       { find: "@", replacement: "/src/*" },
       { find: "@routes", replacement: "/src/router/routes.jsx" },
       { find: "@pages", replacement: "/src/pages/index.jsx" },
-      { find: "@service", replacement: "/src/service/index.jsx" },
+      { find: "@validation", replacement: "/src/utils/index.js" },
+      { find: "@service", replacement: "/src/service/index.js" },
       { find: "@public", replacement: "../../../public/images" },
-      { find: "@modal", replacement: "/src/components/modals" },
+      { find: "@modal", replacement: "/src/components/modals/index.jsx" },
+      { find: "@ui", replacement: "/src/components/ui/index.jsx" },
     ],
   },
 });

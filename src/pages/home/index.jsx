@@ -17,7 +17,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 const Index = () => {
   return (
     <div>
-      {/* Navbar */}
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -31,11 +30,9 @@ const Index = () => {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             My Website
           </Typography>
-          {/* <Button color="inherit">Login</Button> */}
         </Toolbar>
       </AppBar>
 
-      {/* Hero Section */}
       <Box
         sx={{
           height: "60vh",
@@ -60,7 +57,6 @@ const Index = () => {
         </Button>
       </Box>
 
-      {/* Content Section */}
       <Container sx={{ my: 4 }}>
         <Grid container spacing={4}>
           {Array.from(Array(3)).map((_, index) => (

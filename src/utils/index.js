@@ -1,3 +1,7 @@
-import Notification from "./notification";
+// serviceValidationScheme.js
+import * as Yup from "yup";
 
-export { Notification };
+export const serviceValidationScheme = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  price: Yup.string().required("Price is required"),
+});

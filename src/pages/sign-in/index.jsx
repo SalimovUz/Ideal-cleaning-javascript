@@ -53,12 +53,11 @@ const Index = () => {
       console.log("Response: ", response);
 
       if (response.status === 200) {
-        navigate("/");
-        localStorage.setItem("access_token", response.data.access_token);
-        Notification({
-          title: "Sign In Successfuly",
-          type: "success",
-        });
+        toast.success("Succesfully!");
+        localStorage.setItem("access_token", response?.data?.access_token);
+        setTimeout(() => {
+          navigate("/");
+        }, 1500);
       } else {
         toast.error("Login failed. Please try again.");
       }
