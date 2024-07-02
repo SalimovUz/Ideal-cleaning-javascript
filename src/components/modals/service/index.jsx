@@ -23,27 +23,30 @@ const Index = ({ open, handleClose, item }) => {
     name: item?.name ? item?.name : "",
     price: item?.price ? item?.price : "",
   };
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-      let response;
-      if (item) {
-        response = await service.update({ ...item, ...values });
-        console.log(response, "res");
+  const handleSubmit = async (values) => {
+    if (item) {
+      const payload = { id: item.id, ...values };
+      try {
+        const response = await service.update(payload);
         if (response.status === 200) {
           toast.success("Service updated successfully!");
+          window.location.reload();
         }
-      } else {
-        response = await service.create(values);
+      } catch (error) {
+        console.log(error);
+        toast.error("Nimadir xato!");
+      }
+    } else {
+      try {
+        const response = await service.create(values);
         if (response.status === 201) {
           toast.success("Service created successfully!");
+          window.location.reload();
         }
+      } catch (error) {
+        console.log(error);
+        toast.error("Nimadir xato!");
       }
-      window.location.reload();
-    } catch (error) {
-      console.error(error);
-      toast.error("An error occurred while saving the service.");
-    } finally {
-      setSubmitting(false);
     }
   };
 

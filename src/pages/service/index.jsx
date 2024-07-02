@@ -31,7 +31,7 @@ const Index = () => {
       <Service open={open} handleClose={handleClose} />
       <div className="flex flex-col gap-4">
         <div className="flex justify-end">
-          <Button onClick={handleOpen} variant="contained" color="primary">
+          <Button className="hover:scale-110 transition-all duration-400" onClick={handleOpen} variant="contained" color="primary">
             Add
           </Button>
         </div>

@@ -37,6 +37,7 @@ export default function CustomizedTables({ data }) {
   const [open, setOpen] = useState(false);
 
   const deleteItem = async (id) => {
+    alert("O'chirishga ishonchiz komilmi?")
     try {
       const response = await service.delete(id);
       response.status === 200 && window.location.reload();
@@ -74,13 +75,13 @@ export default function CustomizedTables({ data }) {
                       onClick={() => editItem(item)}
                       src={editImg}
                       alt="bir"
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:scale-125 transition-all duration-200"
                     />
                     <img
                       onClick={() => deleteItem(item.id)}
                       src={deleteImg}
                       alt=""
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:scale-125 transition-all duration-200"
                     />
                   </div>
                 </StyledTableCell>
