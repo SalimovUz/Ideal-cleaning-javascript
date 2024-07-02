@@ -9,6 +9,8 @@ import Paper from "@mui/material/Paper";
 import { service } from "@service";
 import { Service } from "@modal";
 import { useState } from "react";
+import editImg from "../../../assets/edit.svg";
+import deleteImg from "../../../assets/delete.svg";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -67,8 +69,20 @@ export default function CustomizedTables({ data }) {
                 <StyledTableCell align="center">{item.name}</StyledTableCell>
                 <StyledTableCell align="center">{item.price}</StyledTableCell>
                 <StyledTableCell align="center" className="flex space-x-4">
-                  <button onClick={() => editItem(item)}>Edit</button>
-                  <button onClick={() => deleteItem(item.id)}>Delete</button>
+                  <div className="flex items-center space-x-4 justify-center">
+                    <img
+                      onClick={() => editItem(item)}
+                      src={editImg}
+                      alt="bir"
+                      className="cursor-pointer"
+                    />
+                    <img
+                      onClick={() => deleteItem(item.id)}
+                      src={deleteImg}
+                      alt=""
+                      className="cursor-pointer"
+                    />
+                  </div>
                 </StyledTableCell>
               </StyledTableRow>
             ))}

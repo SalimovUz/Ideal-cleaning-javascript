@@ -11,7 +11,7 @@ export default defineConfig({
       { find: "@pages", replacement: "/src/pages/index.jsx" },
       { find: "@validation", replacement: "/src/utils/index.js" },
       { find: "@service", replacement: "/src/service/index.js" },
-      { find: "@public", replacement: "../../../public/images" },
+      { find: "@images", replacement: "../../../../public/images" },
       { find: "@modal", replacement: "/src/components/modals/index.jsx" },
       { find: "@ui", replacement: "/src/components/ui/index.jsx" },
     ],
