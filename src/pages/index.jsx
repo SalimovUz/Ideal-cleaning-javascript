@@ -4,5 +4,9 @@ import SignUp from "./sign-up";
 import Profile from "./profile";
 import Service from "./service"
 import Home from "./home";
+import Clients from "./clients";
+import Marketing from "./marketing";
+import Orders from "./orders";
+import Settings from "./settings";
 
-export { SignIn, Main, SignUp, Profile, Service, Home };
+export { SignIn, Main, SignUp, Profile, Service, Home, Clients, Marketing, Orders, Settings};
