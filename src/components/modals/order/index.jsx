@@ -1,147 +1,19 @@
-// import React from "react";
-// import { Modal, Box, Typography, Button, TextField } from "@mui/material";
-// import { Form, Formik } from "formik";
-// import { serviceValidationScheme } from "@validation";
-// import { order } from "@service";
-// import { ToastContainer, toast } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
-
-// const style = {
-//   position: "absolute",
-//   top: "50%",
-//   left: "50%",
-//   transform: "translate(-50%, -50%)",
-//   width: 400,
-//   bgcolor: "background.paper",
-//   border: "1px solid #000",
-//   boxShadow: 24,
-//   p: 4,
-// };
-
-// const Index = ({ open, handleClose, item }) => {
-//   const initialValues = {
-//     name: item?.name ? item?.name : "",
-//     price: item?.price ? item?.price : "",
-//   };
-//   const handleSubmit = async (values) => {
-//     if (item) {
-//       const payload = { id: item.id, ...values };
-//       try {
-//         const response = await order.update(payload);
-//         if (response.status === 200) {
-//           toast.success("Service updated successfully!");
-//           window.location.reload();
-//         }
-//       } catch (error) {
-//         console.log(error);
-//         toast.error("Nimadir xato!");
-//       }
-//     } else {
-//       try {
-//         const response = await order.create(values);
-//         if (response.status === 201) {
-//           toast.success("Service created successfully!");
-//           window.location.reload();
-//         }
-//       } catch (error) {
-//         console.log(error);
-//         toast.error("Nimadir xato!");
-//       }
-//     }
-//   };
-
-//   return (
-//     <>
-//       <Modal
-//         open={open}
-//         onClose={handleClose}
-//         aria-labelledby="modal-title"
-//         aria-describedby="modal-description"
-//       >
-//         <Box sx={style}>
-//           <Typography id="modal-title" variant="h6" component="h2">
-//             {item ? "Edit Order" : "Create Order"}
-//           </Typography>
-//           <Formik
-//             initialValues={initialValues}
-//             onSubmit={handleSubmit}
-//             validationSchema={serviceValidationScheme}
-//           >
-//             {({
-//               values,
-//               handleChange,
-//               touched,
-//               errors,
-//               handleBlur,
-//               isSubmitting,
-//             }) => (
-//               <Form id="submit" className="mt-6 space-y-4">
-//                 <TextField
-//                   fullWidth
-//                   label="Service Name"
-//                   name="name"
-//                   onChange={handleChange}
-//                   onBlur={handleBlur}
-//                   value={values.name}
-//                   type="text"
-//                   id="name"
-//                   required
-//                   className="my-2"
-//                   error={touched.name && Boolean(errors.name)}
-//                   helperText={touched.name && errors.name}
-//                 />
-//                 <TextField
-//                   fullWidth
-//                   label="Price"
-//                   name="price"
-//                   onChange={handleChange}
-//                   onBlur={handleBlur}
-//                   value={values.price}
-//                   type="number"
-//                   id="price"
-//                   required
-//                   className="my-2"
-//                   error={touched.price && Boolean(errors.price)}
-//                   helperText={touched.price && errors.price}
-//                 />
-//                 <div className="flex justify-between">
-//                   <Button
-//                     onClick={handleClose}
-//                     variant="contained"
-//                     sx={{ mt: 2 }}
-//                   >
-//                     Close
-//                   </Button>
-//                   <Button
-//                     variant="contained"
-//                     sx={{ mt: 2 }}
-//                     type="submit"
-//                     color="primary"
-//                     disabled={isSubmitting}
-//                   >
-//                     {isSubmitting ? "Submitting" : "Save"}
-//                   </Button>
-//                 </div>
-//               </Form>
-//             )}
-//           </Formik>
-//         </Box>
-//       </Modal>
-//       <ToastContainer />
-//     </>
-//   );
-// };
-
-// export default Index;
-
-import React from "react";
-import { Modal, Box, Typography, Button, TextField } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Modal,
+  Box,
+  Typography,
+  Button,
+  TextField,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { order } from "@service";
+import { service } from "@service";
 
 const style = {
   position: "absolute",
@@ -167,6 +39,23 @@ const validationSchema = Yup.object({
 });
 
 const Index = ({ open, handleClose, item }) => {
+  const [data, setData] = useState([]);
+
+  const getData = async () => {
+    try {
+      const response = await service.get();
+      if (response.status === 200 && response?.data?.services) {
+        setData(response?.data?.services);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    setData();
+    getData();
+  }, []);
+
   const initialValues = {
     amount: item?.amount || "",
     client_full_name: item?.name || "",
@@ -174,27 +63,34 @@ const Index = ({ open, handleClose, item }) => {
     service_id: item?.id || "",
   };
 
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-      let response;
-      if (item) {
-        response = await order.update({ ...item, ...values });
+  const handleSubmit = async (values) => {
+    if (item) {
+      const payload = { id: item.id, ...values };
+      try {
+        const response = await order.update(payload);
         if (response.status === 200) {
           toast.success("Order updated successfully!");
+          handleClose(false);
+          getData(data);
+          window.location.reload();
         }
-      } else {
-        response = await order.create(values);
+      } catch (error) {
+        console.log(error.message);
+        toast.error("Something went wrong!");
+      }
+    } else {
+      try {
+        const response = await order.create(values);
         if (response.status === 201) {
           toast.success("Order created successfully!");
-          setTimeout(() => {}, 3000);
+          handleClose();
+          getData(data);
+          window.location.reload();
         }
+      } catch (error) {
+        console.log(error.message);
+        toast.error("Something went wrong!");
       }
-      //   window.location.reload();
-    } catch (error) {
-      console.error(error);
-      toast.error("An error occurred while saving the service.");
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -222,6 +118,7 @@ const Index = ({ open, handleClose, item }) => {
               errors,
               handleBlur,
               isSubmitting,
+              setFieldValue,
             }) => (
               <Form id="submit" className="mt-6 space-y-4">
                 <TextField
@@ -275,20 +172,41 @@ const Index = ({ open, handleClose, item }) => {
                   }
                   margin="normal"
                 />
-                <TextField
+                <Select
                   fullWidth
                   label="Service id"
                   name="service_id"
-                  onChange={handleChange}
+                  onChange={(e) => setFieldValue("service_id", e.target.value)}
                   onBlur={handleBlur}
                   value={values.service_id}
-                  type="text"
                   id="service_id"
                   required
                   error={touched.service_id && Boolean(errors.service_id)}
-                  helperText={touched.service_id && errors.service_id}
-                  margin="normal"
-                />
+                  displayEmpty
+                  renderValue={(selected) => {
+                    if (selected.length === 0) {
+                      return <em>Service</em>;
+                    }
+                    const selectedItem = data.find(
+                      (item) => item.id === selected
+                    );
+                    return selectedItem ? selectedItem.name : "";
+                  }}
+                >
+                  <MenuItem disabled value="">
+                    <em>Service</em>
+                  </MenuItem>
+                  {data.map((item, index) => (
+                    <MenuItem value={item.id} key={index}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.service_id && errors.service_id && (
+                  <Typography color="error" variant="caption">
+                    {errors.service_id}
+                  </Typography>
+                )}
                 <Box
                   sx={{
                     display: "flex",

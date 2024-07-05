@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { Order } from "@modal";
-import { ServiceTable } from "@ui";
+import { OrderTable } from "@ui";
 import { order } from "@service";
 
 const Index = () => {
@@ -14,8 +14,8 @@ const Index = () => {
   const getData = async () => {
     try {
       const response = await order.get();
-      if (response.status === 200 && response?.data?.order) {
-        setData(response?.data?.order);
+      if (response.status === 200 && response?.data?.orders_list) {
+        setData(response?.data?.orders_list);
       }
     } catch (error) {
       console.log(error);
@@ -40,7 +40,7 @@ const Index = () => {
             Add
           </Button>
         </div>
-        <ServiceTable data={data} />
+        <OrderTable data={data} setData={setData} />
       </div>
     </>
   );
