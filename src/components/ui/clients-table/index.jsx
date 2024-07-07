@@ -6,9 +6,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { order } from "@service";
-import { EditOrder } from "@modal";
-import { useState, useEffect } from "react";
 import editImg from "../../../assets/edit.svg";
 import deleteImg from "../../../assets/delete.svg";
 
@@ -31,73 +28,35 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function CustomizedTables({ data }) {
-  const [tableData, setTableData] = useState([]);
-  const [edit, setEdit] = useState({});
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    setTableData(data);
-  }, [data]);
-
-  const deleteItem = async (id) => {
-    try {
-      const response = await order.delete(id);
-      if (response.status === 200) {
-        setTableData((prevData) => prevData.filter((item) => item.id !== id));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const editItem = (item) => {
-    setEdit(item);
-    setOpen(true);
-  };
+const Index = ({ data, setData, deleteItem }) => {
+  const editItem = (item) => {};
 
   return (
     <>
-      <EditOrder item={edit} open={open} handleClose={() => setOpen(false)} />
-
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
               <StyledTableCell align="center">T / R</StyledTableCell>
-              <StyledTableCell align="center">Order Name</StyledTableCell>
-              <StyledTableCell align="center">Order Amount</StyledTableCell>
-              <StyledTableCell align="center">Client Number</StyledTableCell>
-              <StyledTableCell align="center">Service Name</StyledTableCell>
-              <StyledTableCell align="center">Status</StyledTableCell>
+              <StyledTableCell align="center">Client Name</StyledTableCell>
+              <StyledTableCell align="center">Phone number</StyledTableCell>
               <StyledTableCell align="center">Actions</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableData.map((item, index) => (
+            {data.map((item, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell align="center">{index + 1}</StyledTableCell>
                 <StyledTableCell align="center">
-                  {item.client_name}
-                </StyledTableCell>
-                <StyledTableCell align="center">{item.price}</StyledTableCell>
-                <StyledTableCell align="center">
-                  {item.client_phone_number}
+                  {item.full_name}
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  {item.service_name}
+                  {item.phone_number}
                 </StyledTableCell>
-                <StyledTableCell align="center">{item.status}</StyledTableCell>
-                <StyledTableCell align="center" className="flex space-x-4">
+                <StyledTableCell align="center">
                   <div className="flex items-center space-x-4 justify-center">
                     <img
-                      onClick={() => editItem(item)}
-                      src={editImg}
-                      alt="edit"
-                      className="cursor-pointer hover:scale-125 transition-all duration-200"
-                    />
-                    <img
-                      onClick={() => deleteItem(item.id)}
+                      onClick={() => deleteItem(item.id, item.owner_id)}
                       src={deleteImg}
                       alt="delete"
                       className="cursor-pointer hover:scale-125 transition-all duration-200"
@@ -111,4 +70,6 @@ export default function CustomizedTables({ data }) {
       </TableContainer>
     </>
   );
-}
+};
+
+export default Index;

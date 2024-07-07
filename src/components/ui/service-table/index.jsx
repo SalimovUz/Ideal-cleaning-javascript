@@ -8,7 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { service } from "@service";
 import { Service } from "@modal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import editImg from "../../../assets/edit.svg";
 import deleteImg from "../../../assets/delete.svg";
 
@@ -33,14 +33,20 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CustomizedTables({ data }) {
+  const [tableData, setTableData] = useState([]);
   const [edit, setEdit] = useState({});
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    setTableData(data);
+  }, [data]);
+
   const deleteItem = async (id) => {
-    alert("O'chirishga ishonchiz komilmi?")
     try {
       const response = await service.delete(id);
-      response.status === 200 && window.location.reload();
+      if (response.status === 200) {
+        setTableData((prevData) => prevData.filter((item) => item.id !== id));
+      }
     } catch (error) {
       console.log(error);
     }
@@ -50,6 +56,7 @@ export default function CustomizedTables({ data }) {
     setEdit(item);
     setOpen(true);
   };
+
   return (
     <>
       <Service item={edit} open={open} handleClose={() => setOpen(false)} />
@@ -59,12 +66,12 @@ export default function CustomizedTables({ data }) {
             <TableRow>
               <StyledTableCell align="center">T / R</StyledTableCell>
               <StyledTableCell align="center">Service Name</StyledTableCell>
-              <StyledTableCell align="center">Service price</StyledTableCell>
+              <StyledTableCell align="center">Service Price</StyledTableCell>
               <StyledTableCell align="center">Actions</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((item, index) => (
+            {tableData.map((item, index) => (
               <StyledTableRow key={index}>
                 <StyledTableCell align="center">{index + 1}</StyledTableCell>
                 <StyledTableCell align="center">{item.name}</StyledTableCell>
@@ -74,13 +81,13 @@ export default function CustomizedTables({ data }) {
                     <img
                       onClick={() => editItem(item)}
                       src={editImg}
-                      alt="bir"
+                      alt="edit"
                       className="cursor-pointer hover:scale-125 transition-all duration-200"
                     />
                     <img
                       onClick={() => deleteItem(item.id)}
                       src={deleteImg}
-                      alt=""
+                      alt="delete"
                       className="cursor-pointer hover:scale-125 transition-all duration-200"
                     />
                   </div>

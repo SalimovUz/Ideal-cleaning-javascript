@@ -30,7 +30,7 @@ const style = {
 
 const validationSchema = Yup.object({
   amount: Yup.string().required("Amount is required"),
-  client_full_name: Yup.string().required("Client full name is required"),
+  client_name: Yup.string().required("Client full name is required"),
   client_phone_number: Yup.string().required("Client phone number is required"),
   service_id: Yup.string().required("Service id is required"),
 });
@@ -52,45 +52,47 @@ const Index = ({ open, handleClose, item }) => {
       console.log(error);
     }
   };
+
   useEffect(() => {
     getData();
   }, []);
 
   const initialValues = {
-    client_full_name: item?.client_full_name ? item.client_full_name : "",
     amount: item?.amount ? item.amount : "",
+    client_id: item?.client_id ? item?.client_id : "",
+    id: item?.id ? item?.id : "",
+    service_id: item?.service_id ? item?.service_id : "",
+    client_name: item?.client_name ? item.client_name : "",
     client_phone_number: item?.client_phone_number
       ? item?.client_phone_number
       : "",
-    service_id: item?.service_id ? item?.service_id : "",
   };
 
-  const handleSubmit = async (values) => {
-    try {
-      const response = await order.create(values);
-      if (response.status === 201) {
-        toast.success("Order created successfully!");
-        window.location.reload();
+  const handleSubmit = async (values, { setSubmitting }) => {
+    if (item) {
+      const payload = {
+        id: item.id,
+        client_id: values.client_id,
+        client_name: values.client_name,
+        client_phone_number: values.client_phone_number,
+        service_id: values.service_id,
+        amount: values.amount,
+        status: "in_process",
+      };
+      try {
+        const response = await order.update(payload);
+        if (response.status === 200) {
+          toast.success("Order updated successfully!");
+          handleClose();
+          getData();
+        }
+      } catch (error) {
+        console.log(error.message);
+        toast.error("Something went wrong!");
+      } finally {
+        setSubmitting(false);
       }
-    } catch (error) {
-      console.log(error.message);
-      toast.error("Something went wrong!");
     }
-    // if (item) {
-    //   // const payload = { id: item.id, ...values };
-    //   // try {
-    //   //   const response = await order.update(payload);
-    //   //   if (response.status === 200) {
-    //   //     toast.success("Order updated successfully!");
-    //   //     window.location.reload();
-    //   //   }
-    //   // } catch (error) {
-    //   //   console.log(error.message);
-    //   //   toast.error("Something went wrong!");
-    //   // }
-    // } else {
-
-    // }
   };
 
   return (
@@ -103,11 +105,10 @@ const Index = ({ open, handleClose, item }) => {
       >
         <Box sx={style}>
           <Typography id="modal-title" variant="h6" component="h2">
-            {item ? "Edit Service" : "Create Order"}
+            Edit Order
           </Typography>
           <Formik
             initialValues={initialValues}
-            validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
             {({
@@ -123,19 +124,15 @@ const Index = ({ open, handleClose, item }) => {
                 <TextField
                   fullWidth
                   label="Client full name"
-                  name="client_full_name"
+                  name="client_name"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.client_full_name}
+                  value={values.client_name}
                   type="text"
-                  id="client_full_name"
+                  id="client_name"
                   required
-                  error={
-                    touched.client_full_name && Boolean(errors.client_full_name)
-                  }
-                  helperText={
-                    touched.client_full_name && errors.client_full_name
-                  }
+                  error={touched.client_name && Boolean(errors.client_name)}
+                  helperText={touched.client_name && errors.client_name}
                   margin="normal"
                 />
                 <TextField

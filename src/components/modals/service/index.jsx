@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Modal, Box, Typography, Button, TextField } from "@mui/material";
 import { Form, Formik } from "formik";
 import { serviceValidationScheme } from "@validation";
@@ -18,35 +18,36 @@ const style = {
   p: 4,
 };
 
-const Index = ({ open, handleClose, item }) => {
+const Service = ({ open, handleClose, item, setData }) => {
   const initialValues = {
-    name: item?.name ? item?.name : "",
-    price: item?.price ? item?.price : "",
+    name: item?.name || "",
+    price: item?.price || "",
   };
-  const handleSubmit = async (values) => {
-    if (item) {
-      const payload = { id: item.id, ...values };
-      try {
-        const response = await service.update(payload);
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      let response;
+      if (item?.id) {
+        const payload = { id: item.id, ...values };
+        response = await service.update(payload);
         if (response.status === 200) {
+          window.location.reload();
           toast.success("Service updated successfully!");
-          window.location.reload();
+          handleClose();
         }
-      } catch (error) {
-        console.log(error);
-        toast.error("Nimadir xato!");
-      }
-    } else {
-      try {
-        const response = await service.create(values);
+      } else {
+        response = await service.create(values);
         if (response.status === 201) {
-          toast.success("Service created successfully!");
           window.location.reload();
+          toast.success("Service created successfully!");
+          handleClose();
         }
-      } catch (error) {
-        console.log(error);
-        toast.error("Nimadir xato!");
       }
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong!");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -132,4 +133,4 @@ const Index = ({ open, handleClose, item }) => {
   );
 };
 
-export default Index;
+export default Service;
