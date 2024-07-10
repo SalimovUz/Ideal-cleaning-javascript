@@ -64,7 +64,6 @@ const VerifyCodeModal = ({ isOpen, toggle }) => {
         if (navigate("/")) {
           toast.success("Kod email ga yuborildi!", {});
         }
-        // navigate("/");
       }
     } catch (error) {
       console.log(error);

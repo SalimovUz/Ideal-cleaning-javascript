@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "@mui/material";
+import { Button, TextField, InputAdornment } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import { Order } from "@modal";
 import { EditOrder } from "@modal";
 import { OrderTable } from "@ui";
@@ -7,16 +8,21 @@ import { order } from "@service";
 import Pagination from "@mui/material/Pagination";
 
 const Index = () => {
-  const [open, setOpen] = useState(false);
+  const [openOrder, setOpenOrder] = useState(false);
+  const [openEditOrder, setOpenEditOrder] = useState(false);
   const [data, setData] = useState([]);
   const [count, setCount] = useState(0);
   const [params, setParams] = useState({
-    limit: 5,
+    limit: 10,
     page: 1,
+    name: "",
   });
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpenOrder = () => setOpenOrder(true);
+  const handleCloseOrder = () => setOpenOrder(false);
+
+  const handleOpenEditOrder = () => setOpenEditOrder(true);
+  const handleCloseEditOrder = () => setOpenEditOrder(false);
 
   const getData = async () => {
     try {
@@ -42,15 +48,37 @@ const Index = () => {
     });
   };
 
+  const handleSearchChange = (e) => {
+    setParams({
+      ...params,
+      name: e.target.value,
+    });
+  };
+
   return (
     <>
-      <Order open={open} handleClose={handleClose} />
-      <EditOrder open={open} handleClose={handleClose} />
+      <Order open={openOrder} handleClose={handleCloseOrder} />
+      <EditOrder open={openEditOrder} handleClose={handleCloseEditOrder} />
       <div className="flex flex-col gap-4">
-        <div className="flex justify-end">
+        <div className="flex justify-between items-center">
+          <TextField
+          type="text"
+            variant="outlined"
+            placeholder="Search Orders"
+            value={params.search}
+            onChange={handleSearchChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            className="border"
+          />
           <Button
             className="hover:scale-110 transition-all duration-400"
-            onClick={handleOpen}
+            onClick={handleOpenOrder}
             variant="contained"
             color="primary"
           >
@@ -58,7 +86,7 @@ const Index = () => {
           </Button>
         </div>
         <OrderTable data={data} setData={setData} />
-        <Pagination count={count} page={params.total} onChange={handleChange} />
+        <Pagination count={count} page={params.page} onChange={handleChange} />
       </div>
     </>
   );

@@ -55,6 +55,7 @@ const Index = () => {
       if (response.status === 200) {
         toast.success("Succesfully!");
         localStorage.setItem("access_token", response?.data?.access_token);
+        localStorage.setItem("email", values.email )
         setTimeout(() => {
           navigate("/");
         }, 1500);
